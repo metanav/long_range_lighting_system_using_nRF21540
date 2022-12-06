@@ -1,0 +1,31 @@
+#include <zephyr/dt-bindings/led/led.h>
+
+#define SPI_FREQ    4000000
+#define ZERO_FRAME  0x40
+#define ONE_FRAME   0x70
+#define NUM_LEDS    300
+
+&arduino_spi { /* MOSI on D11 / P1.13 */
+	compatible = "nordic,nrf-spim";
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <SPI_FREQ>;
+
+		/* WS2812 or similar */
+		chain-length = <NUM_LEDS>; 
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <ONE_FRAME>;
+		spi-zero-frame = <ZERO_FRAME>;
+	};
+};
+
+/ {
+	aliases {
+		led-strip = &led_strip;
+	};
+};
